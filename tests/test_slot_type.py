@@ -38,7 +38,9 @@ class TestCase(unittest.TestCase):
 {
    "name":"test",
    "valueSelectionStrategy":"ORIGINAL_VALUE",
-   "description":"description",
+   "description": "description",
+   "createVersion": "True",
+   "checksum": "test_chk",
    "enumerationValues":[
       {
          "value":"AMAZON.STRING",
@@ -53,5 +55,8 @@ class TestCase(unittest.TestCase):
         s = Slot()
         s.with_name('test') \
          .with_description('description') \
+         .with_checksum('test_chk') \
+         .with_create_version('True') \
          .with_enumeration_value(EnumerationValue(Value='AMAZON.STRING', Synonyms=['test', 'mytest']))
+
         assert DictUtils.are_same(json.loads(correct_j), s.to_json())
