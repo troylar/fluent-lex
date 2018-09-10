@@ -39,15 +39,18 @@ class Slot:
         self.value_selection_strategy = strategy
         return self
 
-    def apply(self):
-        client = boto3.client('lex-models')
-        slot_j = { "name": self.name,
-                   "enumerationValues": [ { "value": self.value } ],
-                   "valueSelectionStrategy": self.value_selection_strategy}
+    def to_json(self):
+        slot_j = {"name": self.name,
+                  "enumerationValues": [{"value": self.value}],
+                  "valueSelectionStrategy": self.value_selection_strategy}
         if self.description:
             slot_j['description'] = self.description
         if self.synonyms:
             slot_j['enumerationValues']['synonyms'] = self.synonyms
         if self.checksum:
             slot_j['checksum'] = self.checksum
-        client.put_slot_type(**slot_j)
+        return slot_j
+
+    def apply(self):
+        client = boto3.client('lex-models')
+        client.put_slot_type(**self.to_json())
