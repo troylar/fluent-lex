@@ -1,5 +1,6 @@
-from lex.slot import Slot
-import pytest
+import json
+from lex.slot import Slot, EnumerationValue
+from utils import DictUtils
 import unittest
 
 
@@ -31,3 +32,26 @@ class TestCase(unittest.TestCase):
     def test_can_initialize_create_version(self):
         s = Slot(CreateVersion=True)
         assert s.create_version
+
+    def test_minimal_json_is_correct(self):
+        correct_j = """
+{
+   "name":"test",
+   "valueSelectionStrategy":"ORIGINAL_VALUE",
+   "description":"description",
+   "enumerationValues":[
+      {
+         "value":"AMAZON.STRING",
+         "synonyms":[
+            "test",
+            "mytest"
+         ]
+      }
+   ]
+}
+"""
+        s = Slot()
+        s.with_name('test') \
+         .with_description('description') \
+         .with_enumeration_value(EnumerationValue(Value='AMAZON.STRING', Synonyms=['test', 'mytest']))
+        assert DictUtils.are_same(json.loads(correct_j), s.to_json())
